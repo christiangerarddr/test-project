@@ -43,54 +43,58 @@
                             class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
                         >
                             <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                                    >
-                                        Title
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                                    >
-                                        Status
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                                    >
-                                        Due Date
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                                    >
-                                        Tasks
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                                    >
-                                        Actions
-                                    </th>
-                                </tr>
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                    @click="sortTable('title')"
+                                >
+                                    Title
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                    @click="sortTable('status')"
+                                >
+                                    Status
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                    @click="sortTable('due_date')"
+                                >
+                                    Due Date
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                    @click="sortTable('tasks_count')"
+                                >
+                                    Tasks
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                >
+                                    Actions
+                                </th>
+                            </tr>
                             </thead>
                             <tbody
                                 class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                             >
-                                <tr
-                                    v-for="project in projects"
-                                    :key="project.id"
-                                >
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div
-                                            class="text-sm font-medium text-gray-900 dark:text-gray-100"
-                                        >
-                                            {{ project.title }}
-                                        </div>
-                                        <div
-                                            class="text-sm text-gray-500 dark:text-gray-400"
-                                        >
-                                            {{ project.description }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                            <tr
+                                v-for="project in sortedProjects"
+                                :key="project.id"
+                            >
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div
+                                        class="text-sm font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ project.title }}
+                                    </div>
+                                    <div
+                                        class="text-sm text-gray-500 dark:text-gray-400"
+                                    >
+                                        {{ project.description }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                             :class="{
@@ -110,45 +114,45 @@
                                         >
                                             {{ formatStatus(project.status) }}
                                         </span>
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                    >
-                                        {{ formatDate(project.due_date) }}
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                    >
-                                        {{ project.tasks_count }} tasks
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3"
-                                    >
-                                        <Link
-                                            :href="
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                    {{ formatDate(project.due_date) }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                    {{ project.tasks_count }} tasks
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3"
+                                >
+                                    <Link
+                                        :href="
                                                 route(
                                                     'projects.show',
                                                     project.id
                                                 )
                                             "
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
-                                        >
-                                            View
-                                        </Link>
-                                        <button
-                                            @click="editProject(project)"
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            @click="deleteProject(project)"
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-500 dark:text-red-400 bg-white dark:bg-gray-800 hover:text-red-700 dark:hover:text-red-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
+                                    >
+                                        View
+                                    </Link>
+                                    <button
+                                        @click="editProject(project)"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        @click="deleteProject(project)"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-500 dark:text-red-400 bg-white dark:bg-gray-800 hover:text-red-700 dark:hover:text-red-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -168,7 +172,7 @@
                 <div class="mt-6">
                     <form @submit.prevent="submitForm">
                         <div>
-                            <InputLabel for="title" value="Title" />
+                            <InputLabel for="title" value="Title"/>
                             <TextInput
                                 id="title"
                                 type="text"
@@ -183,7 +187,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel for="description" value="Description" />
+                            <InputLabel for="description" value="Description"/>
                             <textarea
                                 id="description"
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
@@ -197,7 +201,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel for="status" value="Status" />
+                            <InputLabel for="status" value="Status"/>
                             <select
                                 id="status"
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
@@ -216,7 +220,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel for="due_date" value="Due Date" />
+                            <InputLabel for="due_date" value="Due Date"/>
                             <TextInput
                                 id="due_date"
                                 type="date"
@@ -246,8 +250,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useForm, Link } from "@inertiajs/vue3";
+import {computed, ref} from "vue";
+import {useForm, Link} from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Modal from "@/Components/Modal.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -256,7 +260,7 @@ import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
-defineProps({
+const props = defineProps({
     projects: {
         type: Array,
         required: true,
@@ -323,4 +327,30 @@ const formatStatus = (status) => {
 const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 };
+
+const sortColumn = ref('');
+const sortOrder = ref(1);
+
+const sortTable = (column) => {
+    if (sortColumn.value === column) {
+        sortOrder.value = -sortOrder.value;
+    } else {
+        sortColumn.value = column;
+        sortOrder.value = 1;
+    }
+}
+
+const sortedProjects = computed(() => {
+    if (!sortColumn.value) return props.projects;
+
+    return [...props.projects].sort((a, b) => {
+        const aValue = a[sortColumn.value];
+        const bValue = b[sortColumn.value];
+
+        if (aValue < bValue) return -sortOrder.value;
+        if (aValue > bValue) return sortOrder.value;
+        return 0;
+    });
+});
+
 </script>
