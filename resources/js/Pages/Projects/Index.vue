@@ -29,6 +29,8 @@
                         </PrimaryButton>
                     </div>
 
+                    <TextInput v-model="filterString" placeholder="Filter table" class="mb-2"/>
+
                     <div v-if="projects.length === 0" class="text-center py-12">
                         <div class="text-gray-500 dark:text-gray-400 mb-2">
                             No projects found
@@ -328,6 +330,7 @@ const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 };
 
+const filterString = ref('');
 const sortColumn = ref('');
 const sortOrder = ref(1);
 
@@ -341,9 +344,23 @@ const sortTable = (column) => {
 }
 
 const sortedProjects = computed(() => {
-    if (!sortColumn.value) return props.projects;
+    let filteredProjects = props.projects;
 
-    return [...props.projects].sort((a, b) => {
+    if (filterString.value) {
+        filteredProjects = props.projects.filter(project => {
+            const filterValue = filterString.value.toLowerCase();
+            return Object.entries(project).some(([key, value]) => {
+                if (key === 'due_date') {
+                    value = formatDate(value)
+                }
+                return String(value).toLowerCase().includes(filterValue);
+            });
+        });
+    }
+
+    if (!sortColumn.value) return filteredProjects;
+
+    return [...filteredProjects].sort((a, b) => {
         const aValue = a[sortColumn.value];
         const bValue = b[sortColumn.value];
 
