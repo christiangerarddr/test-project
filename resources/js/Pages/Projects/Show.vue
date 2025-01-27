@@ -155,22 +155,26 @@
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                                        @click="sortTable('title')"
                                     >
                                         Title
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                                        @click="sortTable('status')"
                                     >
                                         Status
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                                        @click="sortTable('priority')"
                                     >
                                         Priority
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                                        @click="sortTable('completion_date')"
                                     >
                                         Completion Date
                                     </th>
@@ -184,7 +188,7 @@
                             <tbody
                                 class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                             >
-                                <tr v-for="task in tasks" :key="task.id">
+                                <tr v-for="task in sortedTasks" :key="task.id">
                                     <td class="px-6 py-4">
                                         <div
                                             class="text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -371,7 +375,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Modal from "@/Components/Modal.vue";
@@ -477,4 +481,29 @@ const formatStatus = (status) => {
 const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 };
+
+const sortColumn = ref('');
+const sortOrder = ref(1);
+
+const sortTable = (column) => {
+    if (sortColumn.value === column) {
+        sortOrder.value = -sortOrder.value;
+    } else {
+        sortColumn.value = column;
+        sortOrder.value = 1;
+    }
+}
+
+const sortedTasks = computed(() => {
+    if (!sortColumn.value) return props.tasks;
+
+    return [...props.tasks].sort((a, b) => {
+        const aValue = a[sortColumn.value];
+        const bValue = b[sortColumn.value];
+
+        if (aValue < bValue) return -sortOrder.value;
+        if (aValue > bValue) return sortOrder.value;
+        return 0;
+    });
+});
 </script>
