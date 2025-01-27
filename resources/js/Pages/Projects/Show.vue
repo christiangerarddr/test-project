@@ -139,6 +139,8 @@
                         </PrimaryButton>
                     </div>
 
+                    <TextInput v-model="filterString" placeholder="Filter table" class="mb-2"/>
+
                     <div v-if="tasks.length === 0" class="text-center py-12">
                         <div class="text-gray-500 dark:text-gray-400 mb-2">
                             No tasks found
@@ -482,6 +484,7 @@ const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 };
 
+const filterString = ref('');
 const sortColumn = ref('');
 const sortOrder = ref(1);
 
@@ -495,9 +498,25 @@ const sortTable = (column) => {
 }
 
 const sortedTasks = computed(() => {
-    if (!sortColumn.value) return props.tasks;
 
-    return [...props.tasks].sort((a, b) => {
+
+    let filteredTasks = props.tasks;
+
+    if (filterString.value) {
+        filteredTasks = props.tasks.filter(project => {
+            const filterValue = filterString.value.toLowerCase();
+            return Object.entries(project).some(([key, value]) => {
+                if (key === 'completion_date') {
+                    value = formatDate(value)
+                }
+                return String(value).toLowerCase().includes(filterValue);
+            });
+        });
+    }
+
+    if (!sortColumn.value) return filteredTasks;
+
+    return [...filteredTasks].sort((a, b) => {
         const aValue = a[sortColumn.value];
         const bValue = b[sortColumn.value];
 
