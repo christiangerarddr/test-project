@@ -350,9 +350,10 @@ const sortedProjects = computed(() => {
         filteredProjects = props.projects.filter(project => {
             const filterValue = filterString.value.toLowerCase();
             return Object.entries(project).some(([key, value]) => {
-                if (key === 'due_date') {
-                    value = formatDate(value)
-                }
+                if (key === 'id' || key === 'project_id' || key === 'created_at' || key === 'updated_at') return;
+                if (key === 'status') value = value.replace(/_/g, ' ');
+                if (key === 'status') value = value.replace(/_/g, ' ');
+                if (key === 'due_date') value = formatDate(value);
                 return String(value).toLowerCase().includes(filterValue);
             });
         });

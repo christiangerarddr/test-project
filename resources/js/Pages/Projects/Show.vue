@@ -498,17 +498,16 @@ const sortTable = (column) => {
 }
 
 const sortedTasks = computed(() => {
-
-
     let filteredTasks = props.tasks;
 
     if (filterString.value) {
         filteredTasks = props.tasks.filter(project => {
             const filterValue = filterString.value.toLowerCase();
             return Object.entries(project).some(([key, value]) => {
-                if (key === 'completion_date') {
-                    value = formatDate(value)
-                }
+                if (key === 'id' || key === 'project_id' || key === 'created_at' || key === 'updated_at') return;
+                if (key === 'status') value = value.replace(/_/g, ' ');
+                if (key === 'status') value = value.replace(/_/g, ' ');
+                if (key === 'completion_date') value = formatDate(value);
                 return String(value).toLowerCase().includes(filterValue);
             });
         });
