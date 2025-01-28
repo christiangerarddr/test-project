@@ -40,12 +40,13 @@ class ProjectController extends Controller
         $this->authorize('view', $project);
 
         $project->load(['tasks' => function ($query) {
-            $query->latest();
+            $query->latest()->with('assignedUser');
         }]);
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
             'tasks' => $project->tasks,
+            'users' => $project->team->allUsers(),
             'taskStats' => [
                 'total' => $project->tasks->count(),
                 'completed' => $project->tasks->where('status', 'completed')->count(),

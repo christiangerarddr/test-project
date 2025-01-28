@@ -181,6 +181,12 @@
                                         Completion Date
                                     </th>
                                     <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                                        @click="sortTable('assigned_user')"
+                                    >
+                                        User
+                                    </th>
+                                    <th
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                                     >
                                         Actions
@@ -250,6 +256,11 @@
                                                   )
                                                 : "Not completed"
                                         }}
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                                    >
+                                        {{task.assigned_user.name }}
                                     </td>
                                     <td
                                         class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3"
@@ -358,6 +369,21 @@
                             />
                         </div>
 
+                        <div class="mt-4">
+                            <InputLabel for="assigned_user_id" value="Assign User" />
+                            <select
+                                id="assigned_user_id"
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                v-model="taskForm.assigned_user_id"
+                            >
+                                <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
+                            </select>
+                            <InputError
+                                :message="taskForm.errors.priority"
+                                class="mt-2"
+                            />
+                        </div>
+
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton
                                 @click="closeTaskModal"
@@ -396,6 +422,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    users: {
+        type: Array,
+        required: true,
+    },
     taskStats: {
         type: Object,
         required: true,
@@ -415,6 +445,7 @@ const taskForm = useForm({
     status: "not_started",
     priority: "medium",
     completion_date: null,
+    assigned_user_id: null
 });
 
 const createTask = () => {
@@ -508,6 +539,7 @@ const sortedTasks = computed(() => {
                 if (key === 'status') value = value.replace(/_/g, ' ');
                 if (key === 'status') value = value.replace(/_/g, ' ');
                 if (key === 'completion_date') value = formatDate(value);
+                if (key === 'assigned_user') value = value.name;
                 return String(value).toLowerCase().includes(filterValue);
             });
         });
@@ -516,8 +548,13 @@ const sortedTasks = computed(() => {
     if (!sortColumn.value) return filteredTasks;
 
     return [...filteredTasks].sort((a, b) => {
-        const aValue = a[sortColumn.value];
-        const bValue = b[sortColumn.value];
+        let aValue = a[sortColumn.value];
+        let bValue = b[sortColumn.value];
+
+        if (sortColumn.value === 'assigned_user') {
+            aValue = aValue.name;
+            bValue = bValue.name;
+        }
 
         if (aValue < bValue) return -sortOrder.value;
         if (aValue > bValue) return sortOrder.value;

@@ -58,6 +58,7 @@ class TaskController extends Controller
             'status' => ['required', 'string', 'in:not_started,in_progress,completed'],
             'priority' => ['required', 'string', 'in:low,medium,high'],
             'completion_date' => ['nullable', 'date'],
+            'assigned_user_id' => ['nullable', 'integer'],
         ]);
 
         if ($validated['status'] === 'completed' && ! $task->completion_date) {
